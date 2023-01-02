@@ -14,15 +14,12 @@ module Api
         render json: { status: 'SUCCESS', message: 'Loaded the post', data: @post }
       end
 
-      def new
-        @post = Post.new
-        @tag = @post.images.new
-      end
-
       def create
-        post = Post.new({title: params[:title], body: params[:body]})
-        image = Image.new({post_id: params[:post_id], url: params[:url]})
-        if post.save && image.save
+        post = Post.new(post_params)
+        post.save
+        image = Image.new(image_params)
+        image.save
+        if 1
           render json: { status: 'SUCCESS', data: post, image: image }
         else
           render json: { status: 'ERROR', data: post.errors }
@@ -49,7 +46,11 @@ module Api
       end
 
       def post_params
-        params.require(:post).permit(:title, :body, images_attributes: [:post_id, :url])
+        params.permit(:title, :body)
+      end
+
+      def image_params
+        params.permit(:post_id, :url)
       end
     end
   end

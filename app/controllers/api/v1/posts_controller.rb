@@ -5,17 +5,25 @@ module Api
 
       def index
         posts = Post.order(created_at: :desc)
-        render json: { status: 'SUCCESS', message: 'Loaded posts', data: posts }
+        @items = posts.as_json(:include => {:images => {:only => [:url]}})
+
+        render json: { status: 'SUCCESS', message: 'Loaded posts', data: @items }
       end
 
       def show
         render json: { status: 'SUCCESS', message: 'Loaded the post', data: @post }
       end
 
+      def new
+        @post = Post.new
+        @tag = @post.images.new
+      end
+
       def create
-        post = Post.new(post_params)
-        if post.save
-          render json: { status: 'SUCCESS', data: post }
+        post = Post.new({title: params[:title], body: params[:body]})
+        image = Image.new({post_id: params[:post_id], url: params[:url]})
+        if post.save && image.save
+          render json: { status: 'SUCCESS', data: post, image: image }
         else
           render json: { status: 'ERROR', data: post.errors }
         end
@@ -41,7 +49,7 @@ module Api
       end
 
       def post_params
-        params.require(:post).permit(:title)
+        params.require(:post).permit(:title, :body, images_attributes: [:post_id, :url])
       end
     end
   end

@@ -19,13 +19,11 @@ module Api
           params[:url],
           :folder => "saison",
         )
-        puts res
         post = Post.new(post_params)
-        post.save
+        @is_save_post = post.save
         image = Image.new(post_id: post.id, url: res['secure_url'])
-        puts res[:secure_url]
-        image.save
-        if 1
+        @is_save_image = image.save
+        if @is_save_post && @is_save_image
           render json: { status: 'SUCCESS', data: post, image: image }
         else
           render json: { status: 'ERROR', data: post.errors }

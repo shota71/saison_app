@@ -15,9 +15,15 @@ module Api
       end
 
       def create
+        res = Cloudinary::Uploader.upload(
+          params[:url],
+          :folder => "saison",
+        )
+        puts res
         post = Post.new(post_params)
         post.save
-        image = Image.new(image_params)
+        image = Image.new(post_id: post.id, url: res['secure_url'])
+        puts res[:secure_url]
         image.save
         if 1
           render json: { status: 'SUCCESS', data: post, image: image }

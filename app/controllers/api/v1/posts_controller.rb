@@ -11,7 +11,8 @@ module Api
       end
 
       def show
-        render json: { status: 'SUCCESS', message: 'Loaded the post', data: @post }
+        @item = @post.as_json(:include => {:images => {:only => [:url]}})
+        render json: { status: 'SUCCESS', message: 'Loaded the post', data: @item }
       end
 
       def create

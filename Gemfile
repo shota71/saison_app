@@ -3,6 +3,8 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.7.3'
 
+gem 'devise'
+gem 'devise_token_auth'
 gem 'carrierwave' , '~> 1.3' ,  '>= 1.3.1'
 gem 'cloudinary'
 gem 'dotenv-rails'

@@ -1,23 +1,30 @@
 module Api
   module V1
     class PostsController < ApplicationController
-      before_action :set_post, only: [:show, :update, :destroy]
+      before_action :set_post, only: %i[show update destroy]
+      # before_action :authenticate_api_v1_user!, only: [:index]
 
       def index
         posts = Post.order(created_at: :desc)
-        @items = posts.as_json(:include => {:images => {:only => [:url]}})
+        @items = posts.as_json(include: { images: { only: [:url] } })
 
         render json: { status: 'SUCCESS', message: 'Loaded posts', data: @items }
       end
 
+      def test
+        posts = Post.order
+        @items = posts.as_json(include: { images: { only: [:url] } })
+      end
+
       def show
-        render json: { status: 'SUCCESS', message: 'Loaded the post', data: @post }
+        @item = @post.as_json(include: { images: { only: [:url] } })
+        render json: { status: 'SUCCESS', message: 'Loaded the post', data: @item }
       end
 
       def create
         res = Cloudinary::Uploader.upload(
           params[:url],
-          :folder => "saison",
+          folder: 'saison'
         )
         post = Post.new(post_params)
         @is_save_post = post.save

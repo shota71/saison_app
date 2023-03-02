@@ -4,7 +4,10 @@ Rails.application.routes.draw do
       mount_devise_token_auth_for 'User', at: 'auth', controllers: {
       registrations: 'auth/registrations'
   }
-      resources :posts
+      resources :posts do
+        post "favorites" => "posts#like"
+        delete "favorites" => "posts#unlike"
+      end
       resources :users
     end
   end

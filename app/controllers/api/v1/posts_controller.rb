@@ -4,9 +4,21 @@ module Api
       before_action :set_post, only: %i[show update destroy]
       # before_action :authenticate_api_v1_user!, only: [:index]
 
+      def like
+        @post_favorite = Favorite.new(user_id: current_api_v1_user.id, post_id: params[:post_id])
+        @post_favorite.save
+        # redirect_to post_path(params[:post_id])
+      end
+
+      def unlike
+        @post_favorite = Favorite.find_by(user_id: current_api_v1_user.id, post_id: params[:post_id])
+        @post_favorite.destroy
+        # redirect_to post_path(params[:post_id])
+      end
+
       def index
         posts = Post.order(created_at: :desc)
-        @items = posts.as_json(include: { images: { only: [:url] } })
+        @items = posts.as_json(include: { images: { only: [:url] }, user: {} })
 
         render json: { status: 'SUCCESS', message: 'Loaded posts', data: @items }
       end
@@ -17,8 +29,14 @@ module Api
       end
 
       def show
-        @item = @post.as_json(include: { images: { only: [:url] } })
-        render json: { status: 'SUCCESS', message: 'Loaded the post', data: @item }
+        # @isLiked = @post.favorite?(api_v1_current_user)
+        @isLiked = nil;
+        if current_api_v1_user
+          @isLiked = @post.favorite?(current_api_v1_user)
+        end
+        @likes_count = Favorite.where(post_id: @post.id).count
+        @item = @post.as_json(include: { images: { only: [:url] }, user: {} })
+        render json: { status: 'SUCCESS', message: 'Loaded the post', data: @item, isLiked: @isLiked, likesCount: @likes_count }
       end
 
       def create
@@ -27,6 +45,7 @@ module Api
           folder: 'saison'
         )
         post = Post.new(post_params)
+        post.user_id = current_api_v1_user.id
         @is_save_post = post.save
         image = Image.new(post_id: post.id, url: res['secure_url'])
         @is_save_image = image.save

@@ -19,8 +19,9 @@ module Api
       def index
         posts = Post.order(created_at: :desc)
         @items = posts.as_json(include: { images: { only: [:url] }, user: {} })
+        @post_like_ranks = Post.find(Like.group(:post_id).order('count(post_id) desc').pluck(:post_id))
 
-        render json: { status: 'SUCCESS', message: 'Loaded posts', data: @items }
+        render json: { status: 'SUCCESS', message: 'Loaded posts', data: @items, post_like_ranks: @post_like_ranks}
       end
 
       def test

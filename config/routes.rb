@@ -8,6 +8,7 @@ Rails.application.routes.draw do
         post "favorites" => "posts#like"
         delete "favorites" => "posts#unlike"
       end
+      get "users/auth" => 'users#auth'
       resources :users
     end
   end

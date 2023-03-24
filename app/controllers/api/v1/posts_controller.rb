@@ -19,14 +19,15 @@ module Api
       def index
         posts = Post.order(created_at: :desc)
         @items = posts.as_json(include: { images: { only: [:url] }, user: {} })
-        @post_like_ranks = Post.joins('LEFT OUTER JOIN favorites ON posts.id = favorites.post_id')
-                      .group('posts.id')
-                      .select('posts.*, COUNT(favorites.id) as likes_count')
-                      .order('likes_count DESC')
+        post_like_ranks = Post.joins(:favorites)
+                        .select('posts.*, COUNT(favorites.id) as likes_count')
+                        .group('posts.id')
+                        .order('likes_count DESC')
+                        .as_json(include: { images: { only: [:url] }, user: {} })
 
 
         # render json: { status: 'SUCCESS', message: 'Loaded posts', data: @items}
-        render json: { status: 'SUCCESS', message: 'Loaded posts', data: @items, post_like_ranks: @post_like_ranks}
+        render json: { status: 'SUCCESS', message: 'Loaded posts', data: @items, post_like_ranks: post_like_ranks}
       end
 
       def test

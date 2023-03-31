@@ -20,6 +20,7 @@ module Api
         posts = Post.order(created_at: :desc)
         @items = posts.as_json(include: { images: { only: [:url] }, user: {} }).map do |post|
           post.merge({ likes_count: post.favorites.count })
+        end
         post_like_ranks = Post.joins('LEFT OUTER JOIN favorites ON posts.id = favorites.post_id')
                               .select('posts.*, COUNT(favorites.id) as likes_count')
                               .group('posts.id')

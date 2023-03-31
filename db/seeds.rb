@@ -23,7 +23,7 @@ end
 # タイトルと本文を配列で定義
 post_titles = ['タイトル1', 'タイトル2', 'タイトル3', 'タイトル4', 'タイトル5']
 post_bodies = ['本文1', '本文2', '本文3', '本文4', '本文5']
-image_urls = ['https://example.com/image1.jpg', 'https://example.com/image2.jpg', 'https://example.com/image3.jpg', 'https://example.com/image4.jpg', 'https://example.com/image5.jpg']
+image_urls = ['https://res.cloudinary.com/dxn30zcfs/image/upload/v1673108558/saison/p755ymn1dnufmepwsk7u.jpg', 'https://res.cloudinary.com/dxn30zcfs/image/upload/v1673108558/saison/p755ymn1dnufmepwsk7u.jpg', 'https://res.cloudinary.com/dxn30zcfs/image/upload/v1673108558/saison/p755ymn1dnufmepwsk7u.jpg', 'https://res.cloudinary.com/dxn30zcfs/image/upload/v1673108558/saison/p755ymn1dnufmepwsk7u.jpg', 'https://res.cloudinary.com/dxn30zcfs/image/upload/v1673108558/saison/p755ymn1dnufmepwsk7u.jpg']
 
 # 5人のユーザーがそれぞれ1つずつ投稿する
 User.all.each_with_index do |user, i|
